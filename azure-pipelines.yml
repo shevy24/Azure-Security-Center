@@ -9,6 +9,25 @@ name: "Azure Security Center Validations"
 trigger:
 - master
 
+#- script: |
+#	docker run \
+# 	-v "$(Build.SourcesDirectory):/app:cached" \
+#  	-v "$(Build.ArtifactStagingDirectory):/reports:cached" \
+#  	shiftleft/sast-scan scan --src /app \
+#  	--out_dir /reports/CodeAnalysisLogs
+#  displayName: "Perform Security Scan"
+  continueOnError: "true"
+
+
+- task: PublishBuildArtifacts@1
+  displayName: "Publish analysis logs"
+  inputs:
+	PathtoPublish: "$(Build.ArtifactStagingDirectory)/CodeAnalysisLogs"
+	ArtifactName: "CodeAnalysisLogs"
+	publishLocation: "Container"
+
+
+
 jobs:
 - template: .azure-pipelines/yamlFileValidator.yaml
 - template: .azure-pipelines/jsonFileValidator.yaml
